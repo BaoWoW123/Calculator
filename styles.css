@@ -12,11 +12,12 @@ body {
 .calculator {
     display: flex;
     flex-direction: column;
-    padding: 20px;
     border: 10px solid beige;
     border-radius: 10%;
     background-color: lightslategray;
-
+    width: 40vh;
+    height: 60vh;
+    padding: 10px;
 }
 .screen {
     display: flex;
@@ -25,6 +26,10 @@ body {
     justify-content: flex-end;
     margin: 20px 10px;
     padding: 20px;
+    width: auto;
+    max-width: auto;
+    min-height: 10%;
+    max-height: 10%;
     background-color:lightgray;
 }
 
@@ -33,9 +38,11 @@ body {
 }
 .buttons {
     display: grid;
-    margin: auto;
+    justify-content: center;
     gap: 5px;
-    grid-template-columns: repeat(4, 100px);
+    grid-template-columns: repeat(4, 80px);
+    grid-template-rows: repeat(4, 80px);
+
 }
 
 .topRow {
