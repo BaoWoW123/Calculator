@@ -6,55 +6,104 @@ let input = document.querySelector('.input');
 let output = document.querySelector('.output');
 let equal = buttons.querySelector('#equal')
 let a = 0;
+let b = 0;
+let c = 0;
+let operator = null;
+
 
 function erase() {
-    input.textContent = '';
+    input.textContent = null;
+    a = null;
+
 }
 
 btnDel.addEventListener('click', (erase));
 
 btnClear.addEventListener('click', () => {
-    erase();
-    output.textContent = '';
-    a = 0;
+    erase();    
+    b= null;
+    c = null;
+    operator = null;
+    output.textContent = null;
 })
 
-equal.addEventListener('click', operate)
+buttons.addEventListener('click', (btn) =>{
+    let noGrid = !btn.target.classList.contains('buttons')
 
-buttons.addEventListener('click', (b) => {
-
-    if (!b.target.classList.contains('buttons') && /[\d.]/.test(b.target.textContent) == true) {        
-        input.textContent += b.target.textContent;
-        a = +(input.textContent);
+    if (/[\d.]/g.test(btn.target.textContent) && noGrid) {
+        input.textContent += btn.target.textContent;
+        a = +input.textContent
         if (isNaN(a)) {
-            a = input.textContent.toString()
-            a = a.split('').slice(0,-1).join('')
-            input.textContent = a
-            a = Number(input.textContent)
+            a = + input.textContent.toString().split('').slice(0,-1).join('')
+            input.textContent = a;
         }
     }
-    else if (!b.target.classList.contains('buttons')) {
-        operator = b.target.textContent;
-        console.log('operator', operator)
+    else if (btn.target.textContent !== '=' && noGrid) {
+        operator = btn.target.textContent
+        console.log(operator)
+        c = a;
+        output.textContent = `${c} ${operator}`;
+        input.textContent = null;
+    }
+    else if (operator !== null & noGrid) {
+        //occurs when operator is clicked again
+        b = +input.textContent
+        if (c !== null) {
+            b = a;
+            operate(operator, a, b)
+            c = null;
+            input.textContent = null;
+        }
     }
 })
-
-function add (a, b) { a + b};
-
-function subtract (a, b) { a - b};
-
-function multiply (a, b) { a * b};
-
-function divide (a, b) { a / b};
 
 function operate (operator, a, b) {
-    input.textContent = '';
-    console.log(a)
+    console.log(a, b, c)
+    a = c;
+        switch (operator) {
+            case '+':
+                return add(a,b);
+            case '-':
+                return subtract(a,b);
+            case '*':
+                return multiply(a,b);
+            case '÷':
+                return divide(a,b);
+            default:
+                console.log('solved')
+                return `${a+operator+b}`;
+        }
 }
+function add (a, b) {
+    output.textContent = a + b
+};
 
-buttons.addEventListener('click', (b) => {
-    if (typeof (b.target.textContent) == Number) {
-        operate()
-        prompt('afs')
-    }
-})
+function subtract (a, b) {
+    output.textContent = a - b
+};
+function multiply (a, b) {
+    output.textContent = a * b
+};
+function divide (a, b) {
+    output.textContent = a / b;
+};
+/*
+type in a number
+when click on an operator, store current number into var a
+store operator and clear screen input
+type in next number
+when click on operator, solve pair
+
+how to solve a, operator, & this.value 
+    may need to store last number into var b 
+how to switch event function to var b 
+    onchange event for variable?
+
+if operator is present 
+if this.value is there, this = b
+    a = b
+    c = a
+    solve 
+    store current number in output
+    take out operator
+    */

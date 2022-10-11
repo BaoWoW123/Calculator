@@ -33,8 +33,10 @@ body {
     background-color:lightgray;
 }
 
+
 .input {
     font-size: 30px;
+    margin: auto 0px;
 }
 .buttons {
     display: grid;
