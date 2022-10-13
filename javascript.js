@@ -5,16 +5,23 @@ let btnClear = document.querySelector('#btnClear');
 let input = document.querySelector('.input');
 let output = document.querySelector('.output');
 let equal = buttons.querySelector('#equal')
-let a = 0;
-let b = 0;
-let c = 0;
+let a = null;
+let b = null;
 let operator = null;
 
 
 function erase() {
     input.textContent = null;
     a = null;
+}
 
+function divideError() {
+    if (operator == '÷' && b == 0){
+        erase()
+        output.textContent = ''
+        alert("Can't do that bruv")
+        return true
+    }   
 }
 
 btnDel.addEventListener('click', (erase));
@@ -22,44 +29,66 @@ btnDel.addEventListener('click', (erase));
 btnClear.addEventListener('click', () => {
     erase();    
     b= null;
-    c = null;
     operator = null;
     output.textContent = null;
 })
-
 buttons.addEventListener('click', (btn) =>{
+    console.log('top',a,operator, b)
     let noGrid = !btn.target.classList.contains('buttons')
-
+    
+    //number button
     if (/[\d.]/g.test(btn.target.textContent) && noGrid) {
+        if (output.textContent !== ''){
+        //runs when '1 +' is in output, might run if only number is in output after solving
+        input.textContent += btn.target.textContent;
+        b = +input.textContent
+            if (isNaN(b)) {
+                b = + input.textContent.toString().split('').slice(0,-1).join('')
+                input.textContent = b;
+            }
+        return console.log('B',b)
+        } 
+        //first number
         input.textContent += btn.target.textContent;
         a = +input.textContent
-        if (isNaN(a)) {
-            a = + input.textContent.toString().split('').slice(0,-1).join('')
-            input.textContent = a;
-        }
+            if (isNaN(a)) {
+                a = + input.textContent.toString().split('').slice(0,-1).join('')
+                input.textContent = a;
+            }
     }
+    
+    //operator button
     else if (btn.target.textContent !== '=' && noGrid) {
+        if(output.textContent !== '' && operator != null) {
+            if (b == null) {
+                console.log('topper')
+                operator = btn.target.textContent
+                return output.textContent = `${a} ${operator}`
+            }
+            a = operate(operator, a, b)
+            output.textContent = `${a} ${btn.target.textContent}`;
+            operator = btn.target.textContent
+            b = null;
+            console.log('part1')
+            return input.textContent = null;
+        }
         operator = btn.target.textContent
-        console.log(operator)
-        c = a;
-        output.textContent = `${c} ${operator}`;
+        output.textContent = `${a} ${operator}`;
         input.textContent = null;
     }
+    //occurs when operator is clicked again
     else if (operator !== null & noGrid) {
-        //occurs when operator is clicked again
-        b = +input.textContent
-        if (c !== null) {
-            b = a;
-            operate(operator, a, b)
-            c = null;
+        if (divideError()==true) return;
+            a = operate(operator, a, b)
             input.textContent = null;
-        }
+            b = null;
+            operator = null;
     }
+    
+    console.log('end',a,operator,b)
 })
 
 function operate (operator, a, b) {
-    console.log(a, b, c)
-    a = c;
         switch (operator) {
             case '+':
                 return add(a,b);
@@ -69,23 +98,20 @@ function operate (operator, a, b) {
                 return multiply(a,b);
             case '÷':
                 return divide(a,b);
-            default:
-                console.log('solved')
-                return `${a+operator+b}`;
         }
 }
 function add (a, b) {
-    output.textContent = a + b
+    return output.textContent = a + b
 };
 
 function subtract (a, b) {
-    output.textContent = a - b
+    return output.textContent = a - b
 };
 function multiply (a, b) {
-    output.textContent = a * b
+    return output.textContent = a * b
 };
 function divide (a, b) {
-    output.textContent = a / b;
+    return output.textContent = a / b;
 };
 /*
 type in a number
