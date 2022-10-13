@@ -9,12 +9,6 @@ let a = null;
 let b = null;
 let operator = null;
 
-
-function erase() {
-    input.textContent = null;
-    a = null;
-}
-
 function divideError() {
     if (operator == '÷' && b == 0){
         erase()
@@ -23,23 +17,27 @@ function divideError() {
         return true
     }   
 }
-
+function erase() {
+    input.textContent = null;
+    b = null;
+}
 btnDel.addEventListener('click', (erase));
-
 btnClear.addEventListener('click', () => {
     erase();    
-    b= null;
     operator = null;
     output.textContent = null;
 })
 buttons.addEventListener('click', (btn) =>{
     console.log('top',a,operator, b)
     let noGrid = !btn.target.classList.contains('buttons')
-    
+    if (/[^\d.]/g.test(btn.target.textContent) && a == null && output.textContent == null && noGrid){
+        return alert("Can't start with operator!");
+    }
     //number button
     if (/[\d.]/g.test(btn.target.textContent) && noGrid) {
         if (output.textContent !== ''){
         //runs when '1 +' is in output, might run if only number is in output after solving
+        if (operator == null) return;
         input.textContent += btn.target.textContent;
         b = +input.textContent
             if (isNaN(b)) {
@@ -48,6 +46,7 @@ buttons.addEventListener('click', (btn) =>{
             }
         return console.log('B',b)
         } 
+        console.log()
         //first number
         input.textContent += btn.target.textContent;
         a = +input.textContent
@@ -79,12 +78,13 @@ buttons.addEventListener('click', (btn) =>{
     //occurs when operator is clicked again
     else if (operator !== null & noGrid) {
         if (divideError()==true) return;
+        //Solving when a and operator is defined but no var b 
+        if (a != null && operator != null && b == null) return alert('No second number input');
             a = operate(operator, a, b)
             input.textContent = null;
             b = null;
             operator = null;
     }
-    
     console.log('end',a,operator,b)
 })
 
